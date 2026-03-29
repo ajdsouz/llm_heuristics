@@ -1,0 +1,6 @@
+# folders
+archive-heuristics/
+logs/
+experiments/
+
+.DS_Store
