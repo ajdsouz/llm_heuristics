@@ -1,4 +1,7 @@
 
+**Update** This repository supports local models using vLLM.
+
+---
 
 # Installing Dependencies
 
@@ -30,14 +33,15 @@ where `DOMAIN` is the name of the domain for which the heuristic is generated. T
 There are several other options you can pass to the command line:
 
 - `--domain`: choose the domain that you want to use.
-- `--framework`: choose what framework you want to use. Available choices are: `gemini` (default), `deepseek`, and `openai`.
-- `--model`: choose the LLM model to be used. The available models depend on the selected framework.
+- `--framework`: choose what framework you want to use. Available choices are: `gemini` (default), `deepseek`,`openai` and `local`.
+- `--model`: choose the LLM model to be used. The available models depend on the selected framework. If `local` is selected, provide the path to the model weights or the name of the model to be fetched from HuggingFace
 - `--prompt-format`: choose prompt format. *Note: this option was used during development and is no longer necessary; it will be removed in the future.* (Default: `neurips`)
 - `--heuristic-name`: name of the heuristic and of its class.
 - `--heuristic-file`: file where the learned heuristic is stored. It must end with `.py`.
 - `--temperature`: temperature (default: 1.0)
 - `--top-p`: top-k value (default: 0.5)
 - `--ablation`: choose a component to do the ablation. Omit this option if you want the complete prompt.
+
 
 ## Pyperplan
 
@@ -53,12 +57,26 @@ generated in the previous step.
 Alternatively, you can use `hff` to run the FF heuristic or `blind` to run the blind heuristic (effectively, no heuristic).
 
 ## Example
+If you want to use a local model, `Llama-3.2-3B` to generate the heuristic, you will need to start a vLLM server with the model name / path, as in 
+
+```bash
+vllm serve /path/to/Llama-3.2-3B \
+    --host 127.0.0.1 \
+    --port 8000 \
+```
+alternatively, to initialize the server, you can run 
+
+```bash
+bash init_inference_server.sh /path/to/Llama-3.2-3B
+```
 
 Let's say you want to learn a heuristic for the `blocksworld` domain with the name `AmazingHeuristic`. Then you should run
 
 ```bash
-uv run llm-heuristics.py --domain blocksworld --heuristic-name AmazingHeuristic --heuristic-file amazing-heuristic.py
+uv run llm-heuristics.py --domain blocksworld --framework local --model /path/to/Llama-3.2-3B --heuristic-name AmazingHeuristic --heuristic-file amazing-heuristic.py
 ```
+
+To see a working example, checkout ```llm-heuristics.sh```.
 
 Now we can call Pyperplan using the new heuristic with the following command to solve instance
 an instance of the `blocksworld` testing set:
@@ -66,6 +84,7 @@ an instance of the `blocksworld` testing set:
 ```bash
 uv run src/pyperplan/pyperplan.py -H amazing-heuristic.py -s gbfs_early_goal_test benchmarks/ipc2023-learning/testing/blocksworld/easy-p03.pddl
 ```
+
 
 # End-to-End Plan Generation
 
