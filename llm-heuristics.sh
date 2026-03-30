@@ -1,13 +1,22 @@
-# !/bin/bash
+#!/bin/bash
 source .venv/bin/activate
 
-# serve LLM model using vllm
-MODEL_NAME = "/scratch/common_models/Llama-3.2-1b"
-bash init_inference_server.sh "$MODEL_NAME"
+export CUDA_VISIBLE_DEVICES=0
+echo "Using CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES"
 
-uv run llm-heuristics.py \
-    --domain blocksworld \
-    --framework local \
-    --model /scratch.common_models/Llama-3.2-1b \
-    --heuristic-file heuristics/blocksworld_heuristic.py \
-    
+#serve LLM model using vllm
+MODEL_NAME="/scratch/common_models/Llama-3.2-3B-Instruct"
+bash init_inference_server.sh "$MODEL_NAME" &
+
+until curl -s http://localhost:8000/v1/models | grep -q "id"; do
+  echo "Waiting for model to load..."
+  sleep 2
+done
+
+echo "Model is loaded"
+
+python llm-heuristics.py \
+    --domain "blocksworld" \
+    --framework "local" \
+    --model "$MODEL_NAME" \
+    --heuristic-file "heuristics/llama-3.2-3B_heuristic.py" \

@@ -2,5 +2,6 @@
 archive-heuristics/
 logs/
 experiments/
+.venv/
 
 .DS_Store
