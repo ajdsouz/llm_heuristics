@@ -1,6 +1,7 @@
+from src.utils import timer
 from src.llm_heuristics.templates import *
 
-
+@timer
 def create_prompt(suite, heuristic_name, prompt_format, ablation):
     data = {}
 
@@ -71,6 +72,7 @@ def create_prompt(suite, heuristic_name, prompt_format, ablation):
     prompt = template.substitute(data)
     return prompt
 
+@timer
 def create_ablation_prompt(ablation_option):
     if ablation_option == 'complete' or ablation_option == 'heuristics-nocomment':
         prompt = DESCRIPTION + "\n" + DOMAIN + "\n" + INSTANCES + "\n" + DEPENDENT_HEURISTICS + "\n" + STATE_REPRESENTATION + "\n" + STATIC_REPRESENTATION + "\n" + PLANNER_CODE + "\n" + CHECKLIST
@@ -127,6 +129,7 @@ def read_relaxation_file():
 
     return ''.join(code)
 
+@timer
 def create_end_to_end_prompt(suite, instance):
     data = {}
 
