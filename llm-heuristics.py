@@ -158,5 +158,5 @@ def main(domain, model, framework, heuristic_name, heuristic_file, prompt_format
 
 
 if __name__ == "__main__":
-    total_runtime = main()
+    total_runtime, _ = main()
     logging.info(f"Total heuristic generation runtime: {total_runtime}")
