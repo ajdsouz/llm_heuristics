@@ -159,5 +159,5 @@ def main(domain, instance, model, framework, plan_file, temperature, top_p):
 
 
 if __name__ == "__main__":
-    total_runtime, _ = main()
+    _, total_runtime = main()
     logging.info(f"End to End Runtime: {total_runtime}")
