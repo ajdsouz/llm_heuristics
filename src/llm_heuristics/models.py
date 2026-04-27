@@ -170,7 +170,7 @@ def run_local(model_name, prompt, temperature, top_p):
         model=model_name, # /scratch/common_models/Llama-3.2-1b
         messages=[{"role": "user", "content": prompt}],
         temperature=temperature,
-        #top_p=top_p, # OpenAI does not support top-p with o1
+        top_p=top_p,
         stream=False
     )
 
