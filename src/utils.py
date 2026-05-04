@@ -1,4 +1,5 @@
 from time import perf_counter
+from dataclasses import dataclass
 
 def timer(func):
     """
@@ -13,3 +14,41 @@ def timer(func):
         end = perf_counter()
         return result, (end - start)
     return wrapper
+
+
+@dataclass
+class HeuristicGenerationConfig:
+    model_name: str
+    domain: str
+    instance1: str
+    instance2: str
+    temperature: float
+    top_p: float
+    generated_heuristic: str
+    # runtime_dict: dict
+    heuristic_generation_runtime: float # should it be float?
+
+@dataclass
+class PlanValidationConfig:
+    temperature: float
+    top_p: float
+    prompt_instance1: str # path
+    prompt_instance2: str # path
+    evaluation_instance: str # path
+    generated_heuristic: str # path / code what should be saved?
+    val_runtime: float | str # how to set in case of timeout? 
+    status: str
+
+
+@dataclass
+class DirectoryEvaluationConfig:
+    model: str
+    domain: str
+    prompt_instance1: str
+    prompt_instance2: str
+    temperature: float
+    top_p: float
+    success: list[str]
+    failure: list[str]
+    timeout: list[str]
+    no_solution: list[str]

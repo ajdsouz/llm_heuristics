@@ -26,7 +26,7 @@ import re
 import subprocess
 import sys
 import time
-
+import json
 import grounding
 import heuristics
 from pddl.parser import Parser
@@ -191,7 +191,19 @@ def search_plan(
     return solution
 
 
-def validate_solution(domain_file, problem_file, solution_file):
+def validate_solution(domain_file: str, problem_file: str, solution_file: str, timeout: float) -> str | None:
+    """
+    Validate solution using VAL
+
+    Args:
+        domain_file (str): Path to domain file
+        problem_file (str): Path to problem file / instance file
+        solution_file (str): path to solution file
+        timeout (float): Timeout value
+
+    Returns:
+        str: returns correct /incorrect / timeout of the command  
+    """
     if not validator_available():
         logging.info(
             "validate could not be found on the PATH so the plan can not be validated."
@@ -199,13 +211,21 @@ def validate_solution(domain_file, problem_file, solution_file):
         return
 
     cmd = ["validate", domain_file, problem_file, solution_file]
-    exitcode = subprocess.call(cmd, stdout=subprocess.PIPE)
+    try:
+        result = subprocess.run(cmd, stdout=subprocess.PIPE, timeout=timeout) # storing command output in exitcode is possibly unsafe
 
-    if exitcode == 0:
-        logging.info("Plan correct")
-    else:
-        logging.warning("Plan NOT correct")
-    return exitcode == 0
+        if result.returncode == 0: # plan success, val doesnt error out. not sure about this behaviour
+            logging.info("Plan correct")
+            return "correct"
+        else:
+            logging.warning("Plan NOT correct")
+            return "incorrect"
+        #return exitcode == 0 # refactored to support timeout
+    except subprocess.TimeoutExpired:
+        logging.error(f"Validation timed out after {timeout} seconds")
+        #TODO return timeout 
+        return "timeout"
+    
 
 
 def main():
@@ -226,6 +246,7 @@ def main():
     )
     argparser.add_argument(dest="domain", nargs="?")
     argparser.add_argument(dest="problem")
+    argparser.add_argument("--timeout", type=float)
     argparser.add_argument("-l", "--loglevel", choices=log_levels, default="info")
     argparser.add_argument(
         "-H",
@@ -299,19 +320,22 @@ def main():
 
     if solution is None:
         logging.warning("No solution could be found")
+        status = "no_solution"
     else:
         solution_file = args.problem + ".soln"
         logging.info("Plan length: %s" % len(solution))
         _write_solution(solution, solution_file)
-        validate_solution(args.domain, args.problem, solution_file)
-
+        status = validate_solution(args.domain, args.problem, solution_file, args.timeout)
+        
     try:
         peak_memory = tools.get_peak_memory_in_kb()
     except Warning as warning:
         logging.warning(warning)
     else:
         logging.info("Peak memory: %d KB" % peak_memory)
-
+    return status
 
 if __name__ == "__main__":
-    main()
+    status = main()
+    if status is not None:
+        print(json.dumps({"status": status})) # pipe this to stdout in validate_heuristic

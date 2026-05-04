@@ -3,7 +3,7 @@ name = "llm-heuristics"
 version = "0.1.2dev"
 description = "Using LLMs to learn heuristics for classical planning"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = "==3.10"
 dependencies = [
     "click>=8.1.8",
     "google-genai>=1.11.0",
@@ -13,6 +13,8 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+mac = ["torch==2.9.1"]
+
 cu128 = [
     "torch==2.9.1",
     "vllm",
@@ -25,6 +27,7 @@ cu130 = [
 [tool.uv]
 conflicts = [
     [
+        {extra = "mac"},
         {extra = "cu128"},
         {extra = "cu130"},
     ]
@@ -35,7 +38,11 @@ requires = ["uv_build>=0.9.8,<0.10.0"]
 build-backend = "uv_build"
 
 [tool.uv.sources]
+llm_heuristics = { path = "src/llm_heuristics/" }
+pyperplan = { path = "src/pyperplan/" }
+scripts = { path = "."}
 torch = [
+    {index = "pypi", extra = "mac"},
     {index = "torch-cu128", extra = "cu128"},
     {index = "torch-cu130", extra = "cu130"},
 ]
@@ -49,3 +56,7 @@ explicit = true
 name = "torch-cu130"
 url = "https://download.pytorch.org/whl/cu130"
 explicit = true
+
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple"

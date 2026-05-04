@@ -6,7 +6,7 @@ import json
 from dataclasses import dataclass, asdict
 import logging 
 import click
-from src.utils import timer
+from src.utils import timer, HeuristicGenerationConfig
 from src.llm_heuristics import models
 from src.llm_heuristics.suites import SUITES, DomainSuite
 from src.llm_heuristics.prompt import create_prompt
@@ -138,17 +138,7 @@ def validate_top_p(ctx, param, value):
     help="Ablation options for reordered prompt.",
 )
 
-@dataclass
-class ExperimentConfig:
-    model_name: str
-    domain: str
-    instance1: str
-    instance2: str
-    temperature: float
-    top_p: float
-    generated_heuristic: str
-    # runtime_dict: dict
-    heuristic_generation_runtime: float # should it be float?
+
 
     
 @timer
@@ -214,18 +204,19 @@ def main(base_path, log_path, domain, problem_dir, instance1, instance2, model, 
         f"Saving code to {heuristic_file}."
     )
 
-    experiment = ExperimentConfig(
+    experiment = HeuristicGenerationConfig(
         model_name=model,
         domain=domain,
         temperature=temperature,
         top_p=top_p,
         instance1=instance1,
         instance2=instance2,
-        generated_heuristic=code,
+        generated_heuristic=heuristic_file,
         heuristic_generation_runtime=model_response_time
     )
-
-    experiment_log = os.makedirs(f"{log_path}/{model}-{domain}-{temperature}-{top_p}", exist_ok=True)
+    s_temperature = str(temperature).replace(".", "_")
+    s_top_p = str(top_p).replace(".", "_")
+    experiment_log = os.makedirs(f"{log_path}/{model}-{domain}-temp-{s_temperature}-top_p-{s_top_p}", exist_ok=True)
 
     with open(f"{experiment_log}/logs.json", "w") as f:
         json.dump(asdict(experiment), f, indent=4)
