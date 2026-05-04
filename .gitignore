@@ -3,5 +3,5 @@ archive-heuristics/
 logs/
 experiments/
 .venv/
-
+.vscode/
 .DS_Store
