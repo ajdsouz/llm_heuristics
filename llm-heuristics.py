@@ -4,7 +4,6 @@ import click
 import logging
 import sys
 
-from src.utils import timer
 from src.llm_heuristics import models
 from src.llm_heuristics.suites import SUITES
 from src.llm_heuristics.prompt import create_prompt
@@ -104,8 +103,6 @@ def validate_top_p(ctx, param, value):
                        "planner-code", "checklist", "checklist-no6", "independent-heuristics", "heuristics-nocomment", "dependent-heuristics-and-plans"]),
     help="Ablation options for reordered prompt.",
 )
-
-@timer
 def main(domain, model, framework, heuristic_name, heuristic_file, prompt_format, temperature, top_p, ablation):
     logging.info(f"Python version: {sys.version}.")
     logging.info(f"Using suite {domain}.")
@@ -115,31 +112,29 @@ def main(domain, model, framework, heuristic_name, heuristic_file, prompt_format
     logging.info(f"Using top-P {top_p}.")
     logging.info(f"Using ablation option {ablation}")
     logging.info(f"Generating prompt with format {prompt_format}")
-    prompt, prompt_creation_time = create_prompt(suite, heuristic_name, prompt_format, ablation)
-    logging.info(f"Time to generate prompt: {prompt_creation_time}")
+    prompt = create_prompt(suite, heuristic_name, prompt_format, ablation)
     logging.info("Final prompt: ")
     print(prompt)
 
     logging.info(f"Using model {model} with framework {framework}.")
 
     if framework == "gemini":
-        answer, model_response_time = models.run_gemini(model, prompt, temperature, top_p)
+        answer = models.run_gemini(model, prompt, temperature, top_p)
     elif framework == "deepseek":
-        answer, model_response_time = models.run_deepseek(model, prompt, temperature, top_p)
+        answer = models.run_deepseek(model, prompt, temperature, top_p)
     elif framework == "openai":
-        answer, model_response_time = models.run_openai(model, prompt, temperature, top_p)
+        answer = models.run_openai(model, prompt, temperature, top_p)
     elif framework == "local":
-        answer, model_response_time = models.run_local(model, prompt, temperature, top_p)
+        answer = models.run_local(model, prompt, temperature, top_p)
 
     logging.info("LLM Answer:")
     print(answer)
-    logging.info(f"LLM Answer generation time: {model_response_time}")
+
     if not answer:
         logging.error("LLM returned an empty string!")
         raise ValueError("LLM answer is empty.")
 
-    code, sanitization_time = models.sanitize_llm_answer(answer)
-    logging.info(f"Code extraction time: {sanitization_time}")
+    code = models.sanitize_llm_answer(answer)
     logging.info("Code extracted:")
     print(code)
 
@@ -158,5 +153,4 @@ def main(domain, model, framework, heuristic_name, heuristic_file, prompt_format
 
 
 if __name__ == "__main__":
-    total_runtime, _ = main()
-    logging.info(f"Total heuristic generation runtime: {total_runtime}")
+    main()
