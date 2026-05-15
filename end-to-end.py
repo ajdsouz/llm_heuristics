@@ -5,6 +5,7 @@ import logging
 import subprocess
 import sys
 
+from src.utils import timer
 from src.llm_heuristics.models import *
 from src.llm_heuristics.suites import SUITES
 from src.llm_heuristics.prompt import create_end_to_end_prompt
@@ -17,14 +18,14 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-
+@timer
 def extract_plan(answer):
     match = re.search(r"<plan>(.*?)</plan>", answer, re.DOTALL)
     if match:
         return match.group(1)
     return None
 
-
+@timer
 def validate_plan(domain, instance, plan_file):
     command = ["validate", "-v", domain, instance, plan_file]
     result = subprocess.run(command,
@@ -109,36 +110,38 @@ def main(domain, instance, model, framework, plan_file, temperature, top_p):
     logging.info(f"Using temperature {temperature}.")
     logging.info(f"Using top-P {top_p}.")
 
-    prompt = create_end_to_end_prompt(suite, instance)
+    prompt, prompt_creation_time = create_end_to_end_prompt(suite, instance)
+    logging.info(f"Prompt creation time: {prompt_creation_time}")
     logging.info("Final prompt: ")
     print(prompt)
 
     logging.info(f"Using model {model} with framework {framework}.")
 
     if framework == "gemini":
-        answer = run_gemini(model, prompt, temperature, top_p)
+        answer, model_response_time = run_gemini(model, prompt, temperature, top_p)
     elif framework == "deepseek":
-        answer = run_deepseek(model, prompt, temperature, top_p)
+        answer, model_response_time = run_deepseek(model, prompt, temperature, top_p)
     elif framework == "openai":
-        answer = run_openai(model, prompt, temperature, top_p)
+        answer, model_response_time = run_openai(model, prompt, temperature, top_p)
     elif framework == "local":
-        answer = run_local(model, prompt, temperature, top_p)
+        answer, model_response_time = run_local(model, prompt, temperature, top_p)
 
     logging.info("LLM Answer:")
     print(answer)
+    logging.info(f"LLM Answer generation time: {model_response_time}")
 
     if len(answer) == 0:
         logging.error("LLM returned an empty string!")
         raise ValueError("LLM answer is empty.")
 
-    plan = extract_plan(answer)
+    plan, plan_extraction_time = extract_plan(answer)
     if len(plan) == 0:
          logging.error("LLM returned no plan!")
          raise ValueError("LLM answer has no plan.")
 
     logging.info("Plan found:")
     print(plan)
-
+    logging.info(f"Plan extraction time: {plan_extraction_time}")
     logging.info(
         f"Saving code to {plan_file}."
     )
@@ -146,7 +149,7 @@ def main(domain, instance, model, framework, plan_file, temperature, top_p):
         f.write(plan)
         f.close()
 
-    val = validate_plan(suite.domain, instance, plan_file)
+    val, plan_validation_time = validate_plan(suite.domain, instance, plan_file)
     if val:
         logging.info("Valid plan: 1")
     else:
@@ -156,4 +159,5 @@ def main(domain, instance, model, framework, plan_file, temperature, top_p):
 
 
 if __name__ == "__main__":
-    main()
+    total_runtime, _ = main()
+    logging.info(f"End to End Runtime: {total_runtime}")

@@ -6,7 +6,7 @@ import threading
 from google import genai
 from google.genai import types
 from openai import OpenAI
-from src.llm_heuristics.local_model_serve import serve_local_model
+from src.utils import timer
 
 # Models to experiment
 GEMINI_MODELS = {
@@ -30,11 +30,7 @@ DEEPSEEK_MODELS = {
     "deepseek-v3" : "deepseek-chat",
 }
 
-LOCAL_MODELS = {
-    "llama-3.1-8b" : "/scratch/common_models/Llama-3.1-8B",
-    "llama-3.2-1b" : "/scratch/common_models/Llama-3.2-1B",
-}
-
+@timer
 def sanitize_llm_answer(answer: str) -> str:
     """extracts code from provided answer
 
@@ -56,7 +52,7 @@ def get_model_id(model, available_models):
     except KeyError:
         raise ValueError(f"Model {model} is not supported by the chosen framework. Choose one of the following: {list(available_models.keys())}") from None
 
-
+@timer
 def run_gemini(model_name, prompt, temperature, top_p):
     logging.info("Retrieving GOOGLE_API_KEY")
     api_key = os.getenv("GOOGLE_API_KEY")
@@ -104,7 +100,7 @@ def run_gemini(model_name, prompt, temperature, top_p):
 
     return answer
 
-
+@timer
 def run_deepseek(model_name, prompt, temperature, top_p):
     api_key = os.getenv("DEEPSEEK_API_KEY")
     client = OpenAI(
@@ -127,7 +123,7 @@ def run_deepseek(model_name, prompt, temperature, top_p):
 
     return answer
 
-
+@timer
 def run_openai(model_name, prompt, temperature, top_p):
 
     # NOTE: Since GPT-5, OpenAI does not let us change the temperature either!
@@ -160,6 +156,7 @@ def run_openai(model_name, prompt, temperature, top_p):
 
     return answer
 
+@timer
 def run_local(model_name, prompt, temperature, top_p):
     HOST = "127.0.0.1"
     PORT = "8000"
