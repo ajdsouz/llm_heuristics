@@ -98,7 +98,7 @@ def run_gemini(model_name, prompt, temperature, top_p):
 
     logging.info(f"Thinking summary:\n{thinking_content}")
 
-    return answer
+    return answer, token_count, response.usage_metadata.candidates_token_count
 
 @timer
 def run_deepseek(model_name, prompt, temperature, top_p):
@@ -121,7 +121,7 @@ def run_deepseek(model_name, prompt, temperature, top_p):
 
     answer = completion.choices[0].message.content
 
-    return answer
+    return answer, completion.usage.prompt_tokens, completion.usage.completion_tokens
 
 @timer
 def run_openai(model_name, prompt, temperature, top_p):
@@ -154,7 +154,7 @@ def run_openai(model_name, prompt, temperature, top_p):
 
     answer = completion.choices[0].message.content
 
-    return answer
+    return answer,completion.usage.prompt_tokens, completion.usage.completion_tokens
 
 @timer
 def run_local(model_name, prompt, temperature, top_p):
@@ -179,4 +179,4 @@ def run_local(model_name, prompt, temperature, top_p):
 
     answer = completion.choices[0].message.content
 
-    return answer
+    return answer, completion.usage.prompt_tokens, completion.usage.completion_tokens

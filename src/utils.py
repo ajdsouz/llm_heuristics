@@ -26,7 +26,11 @@ class HeuristicGenerationConfig:
     top_p: float
     generated_heuristic: str
     # runtime_dict: dict
+    # TODO add reasoning, input and output token count. openai returns prompt and completion tokens
     heuristic_generation_runtime: float # should it be float?
+    # TODO add model generation time and switch values
+    input_token_count: int
+    output_token_count: int
 
 @dataclass
 class PlanValidationConfig:
