@@ -73,15 +73,16 @@ def run_pyperplan(domain, problem_file, timeout):
         cmd, 
         timeout=timeout,
         stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
         text=True
     )
-
+    print(result)
     # sanitize command output and get status
-    data = json.loads(
-        result.stdout.splitlines()[-1]
-    )
-    status = data["status"]
-    return status
+    #data = json.loads(
+    #    result.stdout.splitlines()[-1]
+    #)
+    #status = data["status"]
+    #return status
 
 
 def main(args):
