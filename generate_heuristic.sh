@@ -17,11 +17,11 @@ echo "Model is loaded"
 
 python generate_heuristic.py \
     --base_path benchmarks/ipc2023-learning/training \
-    --log_path /scratch/ajdsouza/llm_heuristics/tests/log
+    --log_path /scratch/ajdsouza/llm_heuristics/tests/log \
     --domain blocksworld \
     --problem_dir instance_files \
     --instance1 p01.pddl \
     --instance2 p10.pddl \
     --framework "local" \
     --model "$MODEL_NAME" \
-    --heuristic-file "heuristics/llama-3.2-3B_heuristic.py" \
+    --heuristic-file "heuristics/llama-3.2-3B_heuristic.py"

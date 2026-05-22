@@ -31,12 +31,12 @@ def validate_heuristic_file(value) -> str:
     return value
 
 
-def validate_temperature(ctx, param, value) -> float:
+def validate_temperature(value) -> float:
     if value > 2 or value < 0:
         raise argparse.ArgumentTypeError("The temperature must be in the interval [0,2].")
     return value
 
-def validate_top_p(ctx, param, value) -> float:
+def validate_top_p(value) -> float:
     if value > 1 or value < 0:
         raise argparse.ArgumentTypeError("The top-P must be in the interval [0,1].")
     return value
@@ -150,7 +150,6 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--domain",
-        "-d",
         required=True,
         help="Name of the domain used. Everything else is inferred.",
     )
@@ -186,7 +185,6 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--heuristic-name",
-        "-n",
         default="NewDomainDependentHeuristic",
         type=validate_heuristic_name,
         help="Name of the heuristic and of its class. Name must end with 'Heuristic'. \
@@ -194,9 +192,8 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--heuristic-file",
-        "-f",
         default="new-heuristic.py",
-        callback=validate_heuristic_file,
+        type=validate_heuristic_file,
         help="File where the learnt heuristic is stored. It must be a Python file.",
     )
     parser.add_argument(
@@ -208,17 +205,14 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--temperature",
-        "-t",
         default=1.0,
-        type=float,
-        callback=validate_temperature,
+        type=validate_temperature,
         help="Model temperature.",
     )
     parser.add_argument(
         "--top-p",
         default=0.5,
-        type=float,
-        callback=validate_top_p,
+        type=validate_top_p,
         help="Model top-P.",
     )
     parser.add_argument(
