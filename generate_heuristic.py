@@ -1,6 +1,4 @@
-#from textwrap import indent # where did this come from?
 import dataclasses
-# from xml.dom import NotFoundErr # where did this come from?
 import sys
 import os
 import json
@@ -80,9 +78,9 @@ def main(args):
 
     logging.info(f"Using model {args.model} with framework {args.framework}.")
 
-    if args.framework == "gemini":
-        answer, input_token_count, output_token_count, model_response_time = models.run_gemini(args.model, args.prompt, args.temperature, args.top_p)
-    elif args.framework == "deepseek":
+    # if args.framework == "gemini":
+    #     answer, input_token_count, output_token_count, model_response_time = models.run_gemini(args.model, args.prompt, args.temperature, args.top_p)
+    if args.framework == "deepseek":
         answer, input_token_count, output_token_count, model_response_time = models.run_deepseek(args.model, args.prompt, args.temperature, args.top_p)
     elif args.framework == "openai":
         answer, input_token_count, output_token_count, model_response_time = models.run_openai(args.model, args.prompt, args.temperature, args.top_p)
@@ -117,22 +115,23 @@ def main(args):
         instance1=args.instance1,
         instance2=args.instance2,
         generated_heuristic=args.heuristic_file,
-        heuristic_generation_runtime=model_response_time, # should i change this to give the runtime of the script?,
+        model_response_time=model_response_time, # should i change this to give the runtime of the script?,
         input_token_count=input_token_count,
         output_token_count=output_token_count
     )
-    s_temperature = str(args.temperature).replace(".", "_")
-    s_top_p = str(args.top_p).replace(".", "_")
-    experiment_log = os.makedirs(f"{args.log_path}/{args.model}-{args.domain}-temp-{s_temperature}-top_p-{s_top_p}", exist_ok=True)
+    # s_temperature = str(args.temperature).replace(".", "_")
+    # s_top_p = str(args.top_p).replace(".", "_")
+    # experiment_log = os.makedirs(f"{args.log_path}/{args.model}-{args.domain}-temp-{s_temperature}-top_p-{s_top_p}", exist_ok=True)
 
-    with open(f"{experiment_log}/logs.json", "w") as f:
-        json.dump(asdict(experiment), f, indent=4)
+    # with open(f"{experiment_log}/logs.json", "w") as f:
+    #     json.dump(asdict(experiment), f, indent=4)
         
     with open(args.heuristic_file, "w") as f:
         f.write(code)
         f.close()
-
+    
     logging.info("Finished correctly.")
+    return experiment
 
 
 if __name__ == "__main__":
@@ -232,5 +231,14 @@ if __name__ == "__main__":
 
 
     args = parser.parse_args()
-    _, total_runtime = main(args)
+    experiment, total_runtime = main(args)
+    experiment.heuristic_generation_runtime = total_runtime
+    s_temperature = str(args.temperature).replace(".", "_")
+    s_top_p = str(args.top_p).replace(".", "_")
+    experiment_log = os.makedirs(f"{args.log_path}/{args.model}-{args.domain}-temp-{s_temperature}-top_p-{s_top_p}", exist_ok=True)
+
+    with open(f"{experiment_log}/logs.json", "w") as f:
+        json.dump(asdict(experiment), f, indent=4)
+
     logging.info(f"Total heuristic generation runtime: {total_runtime}") 
+    logging.info(f"Experiment saved at : {experiment_log}")
