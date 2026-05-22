@@ -12,7 +12,7 @@ def timer(func):
         start = perf_counter()
         result = func(*args, **kwargs)
         end = perf_counter()
-        return result, (end - start)
+        return (*result, (end - start))
     return wrapper
 
 
@@ -26,11 +26,12 @@ class HeuristicGenerationConfig:
     top_p: float
     generated_heuristic: str
     # runtime_dict: dict
-    # TODO add reasoning, input and output token count. openai returns prompt and completion tokens
-    heuristic_generation_runtime: float # should it be float?
+    # TODO add reasoning, input and output token count. openai returns prompt and completion tokens 
     # TODO add model generation time and switch values
     input_token_count: int
     output_token_count: int
+    model_response_time: float
+    heuristic_generation_runtime: float | None = None
 
 @dataclass
 class PlanValidationConfig:
@@ -56,3 +57,8 @@ class DirectoryEvaluationConfig:
     failure: list[str]
     timeout: list[str]
     no_solution: list[str]
+
+@dataclass
+class PromptInstances:
+    smallest_instance: str
+    largest_instance: str
