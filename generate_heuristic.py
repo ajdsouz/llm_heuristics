@@ -104,7 +104,7 @@ def main(args):
         raise ValueError("LLM answer has no Python code.")
 
     logging.info(
-        f"Saving code to {heuristic_file}."
+        f"Saving code to {args.heuristic_file}."
     )
 
     experiment = HeuristicGenerationConfig(
