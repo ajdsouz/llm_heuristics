@@ -229,7 +229,8 @@ if __name__ == "__main__":
     experiment.heuristic_generation_runtime = total_runtime
     s_temperature = str(args.temperature).replace(".", "_")
     s_top_p = str(args.top_p).replace(".", "_")
-    experiment_log = os.makedirs(f"{args.log_path}/{args.model}-{args.domain}-temp-{s_temperature}-top_p-{s_top_p}", exist_ok=True)
+    experiment_log = f"{args.log_path}/{args.model}-{args.domain}-temp-{s_temperature}-top_p-{s_top_p}"
+    os.makedirs(experiment_log, exist_ok=True)
 
     with open(f"{experiment_log}/logs.json", "w") as f:
         json.dump(asdict(experiment), f, indent=4)
