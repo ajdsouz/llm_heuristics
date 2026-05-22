@@ -12,7 +12,7 @@ def timer(func):
         start = perf_counter()
         result = func(*args, **kwargs)
         end = perf_counter()
-        return (*result, (end - start))
+        return (result, (end - start))
     return wrapper
 
 
