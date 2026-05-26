@@ -101,8 +101,8 @@ if __name__ == "__main__":
     state, static = get_state_static(problem)
 
     # --- Write outputs ---
-    with open(f"{args.base_path}/example-state-test.out", "w") as f:
+    with open(f"{args.base_path}/example-state.out", "w") as f:
         f.write(str(state))
 
-    with open(f"{args.base_path}/example-static-test.out", "w") as f:
+    with open(f"{args.base_path}/example-static.out", "w") as f:
         f.write(str(static))
