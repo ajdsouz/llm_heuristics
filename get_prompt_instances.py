@@ -40,7 +40,7 @@ def find_instances(domain, instance_directory) -> tuple[str, str]:
     print(f"Smallest problem instance is : {smallest}")
     print(f"Largest problem instance is : {largest}")
 
-    return smallest, largest
+    return smallest[0], largest[0]
 
     
 
