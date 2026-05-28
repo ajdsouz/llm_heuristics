@@ -1,5 +1,3 @@
-# from dateutil.parser import parse # how did these get here?
-# from pkg_resources import require
 import os
 import csv
 import subprocess

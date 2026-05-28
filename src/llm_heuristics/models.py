@@ -52,53 +52,53 @@ def get_model_id(model, available_models):
     except KeyError:
         raise ValueError(f"Model {model} is not supported by the chosen framework. Choose one of the following: {list(available_models.keys())}") from None
 
-@timer
-def run_gemini(model_name, prompt, temperature, top_p):
-    logging.info("Retrieving GOOGLE_API_KEY")
-    api_key = os.getenv("GOOGLE_API_KEY")
-    client = genai.Client(api_key=api_key)
-    model_id = get_model_id(model_name, GEMINI_MODELS)
+# @timer
+# def run_gemini(model_name, prompt, temperature, top_p):
+#     logging.info("Retrieving GOOGLE_API_KEY")
+#     api_key = os.getenv("GOOGLE_API_KEY")
+#     client = genai.Client(api_key=api_key)
+#     model_id = get_model_id(model_name, GEMINI_MODELS)
 
-    token_count = client.models.count_tokens(
-        model=model_id, contents=prompt
-    ).total_tokens
-    logging.info(f"#tokens in prompt: {token_count}")
+#     token_count = client.models.count_tokens(
+#         model=model_id, contents=prompt
+#     ).total_tokens
+#     logging.info(f"#tokens in prompt: {token_count}")
 
-    response = client.models.generate_content(
-        model=model_id,
-        config=types.GenerateContentConfig(
-            temperature=temperature,
-            top_p=top_p,
-            response_mime_type="text/plain",
-            thinking_config=types.ThinkingConfig(thinking_budget=-1,
-                                                 include_thoughts=True),
-        ),
-        contents=prompt,
-    )
-    logging.info("Generating answer...")
-    logging.info(f"Gemini's metadata:\n {response.usage_metadata}")
-    logging.info("Answer generated!")
+#     response = client.models.generate_content(
+#         model=model_id,
+#         config=types.GenerateContentConfig(
+#             temperature=temperature,
+#             top_p=top_p,
+#             response_mime_type="text/plain",
+#             thinking_config=types.ThinkingConfig(thinking_budget=-1,
+#                                                  include_thoughts=True),
+#         ),
+#         contents=prompt,
+#     )
+#     logging.info("Generating answer...")
+#     logging.info(f"Gemini's metadata:\n {response.usage_metadata}")
+#     logging.info("Answer generated!")
 
-    thinking_content = ""
-    answer = ""
+#     thinking_content = ""
+#     answer = ""
 
-    for part in response.candidates[0].content.parts:
-        if not part.text:
-            continue
-        elif part.thought:
-            if not thinking_content:
-                print("Thoughts summary:")
-            print(part.text)
-            thinking_content += part.text
-        else:
-            if not answer:
-                print("Answer:")
-            print(part.text)
-            answer += part.text
+#     for part in response.candidates[0].content.parts:
+#         if not part.text:
+#             continue
+#         elif part.thought:
+#             if not thinking_content:
+#                 print("Thoughts summary:")
+#             print(part.text)
+#             thinking_content += part.text
+#         else:
+#             if not answer:
+#                 print("Answer:")
+#             print(part.text)
+#             answer += part.text
 
-    logging.info(f"Thinking summary:\n{thinking_content}")
+#     logging.info(f"Thinking summary:\n{thinking_content}")
 
-    return answer, token_count, response.usage_metadata.candidates_token_count
+#     return answer, token_count, response.usage_metadata.candidates_token_count
 
 @timer
 def run_deepseek(model_name, prompt, temperature, top_p):

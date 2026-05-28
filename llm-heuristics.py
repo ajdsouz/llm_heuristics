@@ -122,9 +122,9 @@ def main(domain, model, framework, heuristic_name, heuristic_file, prompt_format
 
     logging.info(f"Using model {model} with framework {framework}.")
 
-    if framework == "gemini":
-        answer, model_response_time = models.run_gemini(model, prompt, temperature, top_p)
-    elif framework == "deepseek":
+    # if framework == "gemini":
+    #    answer, model_response_time = models.run_gemini(model, prompt, temperature, top_p)
+    if framework == "deepseek":
         answer, model_response_time = models.run_deepseek(model, prompt, temperature, top_p)
     elif framework == "openai":
         answer, model_response_time = models.run_openai(model, prompt, temperature, top_p)
