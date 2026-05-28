@@ -134,8 +134,9 @@ def main(args):
     s_temperature = str(args.temperature).replace(".", "_")
     s_top_p = str(args.top_p).replace(".", "_")
     experiment_log = f"{args.log_path}/{args.model}-{args.domain}-temp-{s_temperature}-top_p-{s_top_p}"
-
-    with open(f"{experiment_log}/heuristics/{heuristic_file}", "w") as f:
+    heuristics_dir = f"{experiment_log}/heuristics/"
+    os.makedirs(heuristics_dir)
+    with open(f"{heuristics_dir}/{heuristic_file}", "w") as f:
         f.write(code)
         f.close()
     
