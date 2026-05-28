@@ -52,11 +52,14 @@ def main(args):
     # if base_path is not None and domain not in SUITES:
     
     domain_data_folder: str = f"{args.base_path}/{args.domain}"
+    with open(f"{domain_data_folder}/prompt_instances.json", "r") as jf:
+        prompt_instances = json.load(jf)
+
     suite = DomainSuite(
         name=args.domain, 
         domain=f"{domain_data_folder}/domain.pddl",
-        instance1=f"{domain_data_folder}/{args.problem_dir}/{args.instance1}",
-        instance2=f"{domain_data_folder}/{args.problem_dir}/{args.instance2}",
+        instance1=f"{domain_data_folder}/training/easy/{prompt_instances['smallest']}",
+        instance2=f"{domain_data_folder}/training/easy/{prompt_instances['largest']}",
         state=f"{domain_data_folder}/example-state.out",
         static=f"{domain_data_folder}/example-static.out"
     )
@@ -102,9 +105,11 @@ def main(args):
     if not code:
         logging.error("LLM returned no Python code!")
         raise ValueError("LLM answer has no Python code.")
-
+    
+    #TODO create heuristic file under experiment folder
+    heuristic_file = f"{args.domain}_{args.n}.py"
     logging.info(
-        f"Saving code to {args.heuristic_file}."
+        f"Saving code to {heuristic_file}."
     )
 
     experiment = HeuristicGenerationConfig(
@@ -125,8 +130,12 @@ def main(args):
 
     # with open(f"{experiment_log}/logs.json", "w") as f:
     #     json.dump(asdict(experiment), f, indent=4)
-        
-    with open(args.heuristic_file, "w") as f:
+
+    s_temperature = str(args.temperature).replace(".", "_")
+    s_top_p = str(args.top_p).replace(".", "_")
+    experiment_log = f"{args.log_path}/{args.model}-{args.domain}-temp-{s_temperature}-top_p-{s_top_p}"
+
+    with open(f"{experiment_log}/heuristics/{heuristic_file}", "w") as f:
         f.write(code)
         f.close()
     
@@ -159,22 +168,21 @@ if __name__ == "__main__":
         help="The directory of problem instances. ",
     )
 
-    parser.add_argument(
-        "--instance1",
-        required=True,
-        help="First problem file to use to build prompt. Preferable the smmallest problem instance.",
-    )
+    # parser.add_argument(
+    #     "--instance1",
+    #     required=True,
+    #     help="First problem file to use to build prompt. Preferable the smmallest problem instance.",
+    # )
 
-    parser.add_argument(
-        "--instance2",
-        required=True,
-        help="Second problem file to use to build prompt. Preferably the longest proble instance.",
-    )
+    # parser.add_argument(
+    #     "--instance2",
+    #     required=True,
+    #     help="Second problem file to use to build prompt. Preferably the longest proble instance.",
+    # )
 
     parser.add_argument(
         "--framework",
-        default="gemini",
-        choices=["gemini", "deepseek", "openai", "local"],
+        choices=["deepseek", "openai", "local"],
         help="Framework used to run LLMs.",
     )
 
@@ -190,12 +198,12 @@ if __name__ == "__main__":
         help="Name of the heuristic and of its class. Name must end with 'Heuristic'. \
         NOTE: This impacts how you will call it from pyperplan!",
     )
-    parser.add_argument(
-        "--heuristic-file",
-        default="new-heuristic.py",
-        type=validate_heuristic_file,
-        help="File where the learnt heuristic is stored. It must be a Python file.",
-    )
+    # parser.add_argument(
+    #     "--heuristic-file",
+    #     default="new-heuristic.py",
+    #     type=validate_heuristic_file,
+    #     help="File where the learnt heuristic is stored. It must be a Python file.",
+    # )
     parser.add_argument(
         "--prompt-format",
         default="neurips",
@@ -215,6 +223,13 @@ if __name__ == "__main__":
         type=validate_top_p,
         help="Model top-P.",
     )
+
+    parser.add_argument(
+        "--n",
+        type=int,
+        help="Number of prompts"
+    )
+
     parser.add_argument(
         "--ablation",
         default="false",
