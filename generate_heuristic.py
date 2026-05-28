@@ -117,9 +117,9 @@ def main(args):
         domain=args.domain,
         temperature=args.temperature,
         top_p=args.top_p,
-        instance1=args.instance1,
-        instance2=args.instance2,
-        generated_heuristic=args.heuristic_file,
+        instance1=f"{domain_data_folder}/training/easy/{prompt_instances['smallest']}",
+        instance2=f"{domain_data_folder}/training/easy/{prompt_instances['largest']}",
+        generated_heuristic=heuristic_file,
         model_response_time=model_response_time, # should i change this to give the runtime of the script?,
         input_token_count=input_token_count,
         output_token_count=output_token_count
