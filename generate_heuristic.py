@@ -244,7 +244,7 @@ if __name__ == "__main__":
 
 
     args = parser.parse_args()
-    for n_prompt in args.n_prompts:
+    for n_prompt in range(args.n_prompts):
         experiment, total_runtime = main(args, n_prompt)
         experiment.heuristic_generation_runtime = total_runtime
         s_temperature = str(args.temperature).replace(".", "_")
