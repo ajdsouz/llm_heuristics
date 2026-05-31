@@ -5,7 +5,7 @@ export CUDA_VISIBLE_DEVICES=0
 echo "Using CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES"
 
 #serve LLM model using vllm in a background process
-MODEL_NAME="/scratch/common_models/Llama-3.2-3B-Instruct"
+export MODEL_NAME="/scratch/common_models/Llama-3.2-3B-Instruct"
 bash init_inference_server.sh "$MODEL_NAME" &
 
 until curl -s http://localhost:8000/v1/models | grep -q "id"; do

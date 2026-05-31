@@ -45,7 +45,7 @@ def validate_top_p(value) -> float:
 
     
 @timer
-def main(args):
+def main(args, n_prompt):
     logging.info(f"Python version: {sys.version}.")
     logging.info(f"Using suite {args.domain}.")
     # suite = SUITES[domain]
@@ -107,7 +107,7 @@ def main(args):
         raise ValueError("LLM answer has no Python code.")
     
     #TODO create heuristic file under experiment folder
-    heuristic_file = f"{args.domain}_{args.n}.py"
+    heuristic_file = f"{args.domain}_{n_prompt}.py"
     logging.info(
         f"Saving code to {heuristic_file}."
     )
@@ -226,7 +226,7 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "--n",
+        "--n_prompts",
         type=int,
         help="Number of prompts"
     )
@@ -241,15 +241,16 @@ if __name__ == "__main__":
 
 
     args = parser.parse_args()
-    experiment, total_runtime = main(args)
-    experiment.heuristic_generation_runtime = total_runtime
-    s_temperature = str(args.temperature).replace(".", "_")
-    s_top_p = str(args.top_p).replace(".", "_")
-    experiment_log = f"{args.log_path}/{args.model}-{args.domain}-temp-{s_temperature}-top_p-{s_top_p}"
-    os.makedirs(experiment_log, exist_ok=True)
+    for n_prompt in args.n_prompts:
+        experiment, total_runtime = main(args, n_prompt)
+        experiment.heuristic_generation_runtime = total_runtime
+        s_temperature = str(args.temperature).replace(".", "_")
+        s_top_p = str(args.top_p).replace(".", "_")
+        experiment_log = f"{args.log_path}/{args.model}-{args.domain}-temp-{s_temperature}-top_p-{s_top_p}"
+        os.makedirs(experiment_log, exist_ok=True)
 
-    with open(f"{experiment_log}/logs.json", "w") as f:
-        json.dump(asdict(experiment), f, indent=4)
+        with open(f"{experiment_log}/logs.jsonl", "a") as f:
+            f.write(json.dumps(asdict(experiment)) + "\n")
 
-    logging.info(f"Total heuristic generation runtime: {total_runtime}") 
-    logging.info(f"Experiment saved at : {experiment_log}")
+    # logging.info(f"Total heuristic generation runtime: {total_runtime}") 
+    # logging.info(f"Experiment saved at : {experiment_log}")
