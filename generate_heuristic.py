@@ -73,6 +73,8 @@ def main(args, n_prompt):
         # extract model name from model path
         # /scratch/common_models/Llama-3.2-3B-Instruct -> Llama-3.2-3B-Instruct
         model_name = model_name.split("/")[-1]
+        # Llama-3.2-3B-Instruct -> Llama-3_2-3B-Instruct
+        model_name = model_name.replace(".", "_")
     else:
         model_name = model_name
     
@@ -127,14 +129,14 @@ def main(args, n_prompt):
         instance1=f"{domain_data_folder}/training/easy/{prompt_instances['smallest']}",
         instance2=f"{domain_data_folder}/training/easy/{prompt_instances['largest']}",
         generated_heuristic=heuristic_file,
-        model_response_time=model_response_time, # should i change this to give the runtime of the script?,
+        model_response_time=model_response_time, 
         input_token_count=input_token_count,
         output_token_count=output_token_count
     )
 
     s_temperature = str(args.temperature).replace(".", "_")
     s_top_p = str(args.top_p).replace(".", "_")
-    experiment_log = f"{args.log_path}/{args.model}-{args.domain}-temp-{s_temperature}-top_p-{s_top_p}"
+    experiment_log = f"{args.log_path}/{model_name}-{args.domain}-temp-{s_temperature}-top_p-{s_top_p}"
     heuristics_dir = f"{experiment_log}/heuristics/"
     os.makedirs(heuristics_dir)
     with open(f"{heuristics_dir}/{heuristic_file}", "w") as f:
@@ -247,7 +249,7 @@ if __name__ == "__main__":
         experiment.heuristic_generation_runtime = total_runtime
         s_temperature = str(args.temperature).replace(".", "_")
         s_top_p = str(args.top_p).replace(".", "_")
-        experiment_log = f"{args.log_path}/{args.model}-{args.domain}-temp-{s_temperature}-top_p-{s_top_p}"
+        experiment_log = f"{args.log_path}/{experiment.model_name}-{args.domain}-temp-{s_temperature}-top_p-{s_top_p}"
         os.makedirs(experiment_log, exist_ok=True)
 
         with open(f"{experiment_log}/logs.jsonl", "a") as f:
