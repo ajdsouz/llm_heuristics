@@ -68,8 +68,15 @@ def main(args, n_prompt):
     #     "Provide a valid base_path for unseen domains")
     # else:
     #     suite: DomainSuite = SUITES[domain]
+    model_name = args.model
+    if args.framework == "local":
+        # extract model name from model path
+        # /scratch/common_models/Llama-3.2-3B-Instruct -> Llama-3.2-3B-Instruct
+        model_name = model_name.split("/")[-1]
+    else:
+        model_name = model_name
     
-    logging.info(f"Using model {args.model}.")
+    logging.info(f"Using model {model_name} with framework {args.framework}.")
     logging.info(f"Using temperature {args.temperature}.")
     logging.info(f"Using top-P {args.top_p}.")
     logging.info(f"Using ablation option {args.ablation}")
@@ -79,16 +86,16 @@ def main(args, n_prompt):
     logging.info("Final prompt: ")
     print(prompt)
 
-    logging.info(f"Using model {args.model} with framework {args.framework}.")
+    #logging.info(f"Using model {args.model} with framework {args.framework}.")
 
     # if args.framework == "gemini":
     #     answer, input_token_count, output_token_count, model_response_time = models.run_gemini(args.model, args.prompt, args.temperature, args.top_p)
     if args.framework == "deepseek":
-        (answer, input_token_count, output_token_count), model_response_time = models.run_deepseek(args.model, prompt, args.temperature, args.top_p)
+        (answer, input_token_count, output_token_count), model_response_time = models.run_deepseek(model_name, prompt, args.temperature, args.top_p)
     elif args.framework == "openai":
-        (answer, input_token_count, output_token_count), model_response_time = models.run_openai(args.model, prompt, args.temperature, args.top_p)
+        (answer, input_token_count, output_token_count), model_response_time = models.run_openai(model_name, prompt, args.temperature, args.top_p)
     elif args.framework == "local":
-        (answer, input_token_count, output_token_count), model_response_time = models.run_local(args.model, prompt, args.temperature, args.top_p)
+        (answer, input_token_count, output_token_count), model_response_time = models.run_local(model_name, prompt, args.temperature, args.top_p)
 
     logging.info("LLM Answer:")
     print(answer)
@@ -113,7 +120,7 @@ def main(args, n_prompt):
     )
 
     experiment = HeuristicGenerationConfig(
-        model_name=args.model,
+        model_name=model_name,
         domain=args.domain,
         temperature=args.temperature,
         top_p=args.top_p,
@@ -124,12 +131,6 @@ def main(args, n_prompt):
         input_token_count=input_token_count,
         output_token_count=output_token_count
     )
-    # s_temperature = str(args.temperature).replace(".", "_")
-    # s_top_p = str(args.top_p).replace(".", "_")
-    # experiment_log = os.makedirs(f"{args.log_path}/{args.model}-{args.domain}-temp-{s_temperature}-top_p-{s_top_p}", exist_ok=True)
-
-    # with open(f"{experiment_log}/logs.json", "w") as f:
-    #     json.dump(asdict(experiment), f, indent=4)
 
     s_temperature = str(args.temperature).replace(".", "_")
     s_top_p = str(args.top_p).replace(".", "_")
