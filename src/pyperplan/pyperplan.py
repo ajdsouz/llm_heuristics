@@ -191,7 +191,7 @@ def search_plan(
     return solution
 
 
-def validate_solution(domain_file: str, problem_file: str, solution_file: str, timeout: float) -> str | None:
+def validate_solution(domain_file: str, problem_file: str, solution_file: str) -> str | None:
     """
     Validate solution using VAL
 
