@@ -62,7 +62,7 @@ exp.add_parser(make_parser())
 for domain, task in SUITE:
     for h in HEURISTICS:
     
-        algorithm = {model_name}-{h}
+        algorithm = ''.join([{model_name}, h])
     
         heur = os.path.join(HEURISTICS, h)
 
