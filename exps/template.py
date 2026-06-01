@@ -53,7 +53,7 @@ ATTRIBUTES = [
 
 
 # Create a new experiment.
-exp = Experiment(environment=ENV, path={experiment_path}/exps/{split}/{subset})
+exp = Experiment(environment=ENV, path={experiment_dir}/exps/{split}/{subset})
 # Add solver to experiment and make it available to all runs.
 #exp.add_resource("solver", os.path.join(SCRIPT_DIR, "solver.py"))
 # Add custom parser.
