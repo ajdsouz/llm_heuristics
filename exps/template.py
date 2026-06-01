@@ -27,12 +27,10 @@ class BaseReport(AbsoluteReport):
         "node",
     ]
 
-#REMOTE = is_remote()
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-HEURISTICS = os.listdir({heuristics_dir})
-BENCHMARKS_DIR = '{benchmarks_dir}'
-#DOMAINS = IPC2023_DOMAINS
+HEURISTICS = os.listdir('{experiment_dir}/heuristics')
+BENCHMARKS_DIR = '/scratch/ajdsouza/katharina-data/data_for_anthony/data_costumed/data_costumed_ipc_v1/'
 DOMAINS = '{domain}'
 TIME_LIMIT = {time_limit}
 MEMORY_LIMIT = {memory_limit}
@@ -55,7 +53,7 @@ ATTRIBUTES = [
 
 
 # Create a new experiment.
-exp = Experiment(environment=ENV, path={experiment_path})
+exp = Experiment(environment=ENV, path={experiment_path}/exps/{split}/{subset})
 # Add solver to experiment and make it available to all runs.
 #exp.add_resource("solver", os.path.join(SCRIPT_DIR, "solver.py"))
 # Add custom parser.
