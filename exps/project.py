@@ -75,11 +75,12 @@ def make_suite(d, bench, training=False, split="training", subset="easy"):
             files = [f"testing/hard/{f}" for f in os.listdir(os.path.join(path, "testing/hard")) if os.path.isfile(os.path.join(path, "testing/hard", f))]
     files.sort()
     idx = 0
+    domain_file = os.path.join(path, 'domain.pddl')
     for f in files:
         if training and idx == 20:
             break
         if f.endswith('.pddl') and 'domain' not in f:
-            suite.append((f"{path}/domain.pddl", os.path.join(path, f)))
+            suite.append((d, domain_file, os.path.join(path, f)))
             idx += 1
 
     return suite

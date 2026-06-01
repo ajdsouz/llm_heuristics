@@ -60,7 +60,7 @@ exp = Experiment(environment=ENV, path='{experiment_dir}exps/{split}/{subset}')
 # Add custom parser.
 exp.add_parser(make_parser())
 
-for domain, task in SUITE:
+for domain, domain_file, task in SUITE:
     for h in HEURISTICS:
     
         algorithm = ''.join([{model_name}, h])
@@ -71,6 +71,7 @@ for domain, task in SUITE:
         # Create a symbolic link and an alias. This is optional. We
         # could also use absolute paths in add_command().
         run.add_resource("task", task, symlink=True)
+        run.add_resource("domain", domain_file, symlink=True) 
         run.add_command(
             "plan",
             [sys.executable, os.path.join(PROJECT_DIR, "src/pyperplan/pyperplan.py"), "-H", heur, "-s", "gbf", task],
