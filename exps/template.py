@@ -27,11 +27,11 @@ class BaseReport(AbsoluteReport):
         "node",
     ]
 
-PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-HEURISTICS = os.listdir('{experiment_dir}/heuristics')
+HEURISTICS = o'{experiment_dir}heuristics')
 BENCHMARKS_DIR = '/scratch/ajdsouza/katharina-data/data_for_anthony/data_costumed/data_costumed_ipc_v1/'
-DOMAINS = '{domain}'
+DOMAIN = '{domain}'
 TIME_LIMIT = {time_limit}
 MEMORY_LIMIT = {memory_limit}
 
@@ -53,7 +53,7 @@ ATTRIBUTES = [
 
 
 # Create a new experiment.
-exp = Experiment(environment=ENV, path={experiment_dir}/exps/{split}/{subset})
+exp = Experiment(environment=ENV, path='{experiment_dir}exps/{split}/{subset}')
 # Add solver to experiment and make it available to all runs.
 #exp.add_resource("solver", os.path.join(SCRIPT_DIR, "solver.py"))
 # Add custom parser.
@@ -62,7 +62,7 @@ exp.add_parser(make_parser())
 for domain, task in SUITE:
     for h in HEURISTICS:
     
-        algorithm = {model_name}
+        algorithm = {model_name}-{h}
     
         heur = os.path.join(HEURISTICS, h)
 
