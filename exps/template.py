@@ -30,7 +30,7 @@ class BaseReport(AbsoluteReport):
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 HEURISTICS_DIR = '{experiment_dir}heuristics'
-HEURISTICS = [f for f in os.listdir(HEURISTICS_DIR) if f.endswith('.py')
+HEURISTICS = [f for f in os.listdir(HEURISTICS_DIR) if f.endswith('.py')]
 BENCHMARKS_DIR = '/scratch/ajdsouza/katharina-data/data_for_anthony/data_costumed/data_costumed_ipc_v1/'
 DOMAIN = '{domain}'
 TIME_LIMIT = {time_limit}
@@ -74,7 +74,7 @@ for domain, domain_file, task in SUITE:
         run.add_resource("domain", domain_file, symlink=True) 
         run.add_command(
             "plan",
-            [sys.executable, os.path.join(PROJECT_DIR, "src/pyperplan/pyperplan.py"), "-H", heur, "-s", "gbf", task],
+            [sys.executable, os.path.join(PROJECT_DIR, "src/pyperplan/pyperplan.py"), "-H", heur, "-s", "gbf", domain_file, task],
             time_limit=TIME_LIMIT,
             memory_limit=MEMORY_LIMIT,
         )
