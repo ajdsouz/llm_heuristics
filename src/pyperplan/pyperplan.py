@@ -211,20 +211,13 @@ def validate_solution(domain_file: str, problem_file: str, solution_file: str, t
         return
 
     cmd = ["validate", domain_file, problem_file, solution_file]
-    try:
-        result = subprocess.run(cmd, stdout=subprocess.PIPE, timeout=timeout) # storing command output in exitcode is possibly unsafe
+    exitcode = subprocess.call(cmd, stdout=subprocess.PIPE)
 
-        if result.returncode == 0: # plan success, val doesnt error out. not sure about this behaviour
-            logging.info("Plan correct")
-            return "correct"
-        else:
-            logging.warning("Plan NOT correct")
-            return "incorrect"
-        #return exitcode == 0 # refactored to support timeout
-    except subprocess.TimeoutExpired:
-        logging.error(f"Validation timed out after {timeout} seconds")
-        #TODO return timeout 
-        return "timeout"
+    if exitcode == 0:
+        logging.info("Plan correct")
+    else:
+        logging.warning("Plan NOT correct")
+    return exitcode == 0
     
 
 
@@ -320,22 +313,19 @@ def main():
 
     if solution is None:
         logging.warning("No solution could be found")
-        status = "no_solution"
     else:
         solution_file = args.problem + ".soln"
         logging.info("Plan length: %s" % len(solution))
         _write_solution(solution, solution_file)
-        status = validate_solution(args.domain, args.problem, solution_file, args.timeout)
-        
+        validate_solution(args.domain, args.problem, solution_file)
+
     try:
         peak_memory = tools.get_peak_memory_in_kb()
     except Warning as warning:
         logging.warning(warning)
     else:
         logging.info("Peak memory: %d KB" % peak_memory)
-    return status
 
 if __name__ == "__main__":
     status = main()
-    if status is not None:
-        print(json.dumps({"status": status})) # pipe this to stdout in validate_heuristic
+    
