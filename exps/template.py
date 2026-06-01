@@ -29,7 +29,8 @@ class BaseReport(AbsoluteReport):
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-HEURISTICS = '{experiment_dir}heuristics'
+HEURISTICS_DIR = '{experiment_dir}heuristics'
+HEURISTICS = os.listdir(HEURISTICS_DIR)
 BENCHMARKS_DIR = '/scratch/ajdsouza/katharina-data/data_for_anthony/data_costumed/data_costumed_ipc_v1/'
 DOMAIN = '{domain}'
 TIME_LIMIT = {time_limit}
@@ -64,7 +65,7 @@ for domain, task in SUITE:
     
         algorithm = ''.join([{model_name}, h])
     
-        heur = os.path.join(HEURISTICS, h)
+        heur = os.path.join(HEURISTICS_DIR, h)
 
         run = exp.add_run()
         # Create a symbolic link and an alias. This is optional. We
