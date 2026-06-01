@@ -60,27 +60,27 @@ def get_autoscale_domains(run):
     return run['domain'] in AUTOSCALE_DOMAINS
 
 
-def make_suite(dom, bench, training=False, split="training", subset="easy"):
+def make_suite(d, bench, training=False, split="training", subset="easy"):
     suite = []
-    for d in dom:
-        path = os.path.join(bench, d)
-        if split=="training":
-            files = [f for f in os.listdir(os.path.join(path, "training/easy")) if os.path.isfile(os.path.join(path, "training/easy", f))]
-        elif split=="testing":
-            if subset == "easy":
-                files = [f for f in os.listdir(os.path.join(path, "testing/easy")) if os.path.isfile(os.path.join(path, "testing/easy", f))]
-            elif subset == "medium":
-                files = [f for f in os.listdir(os.path.join(path, "testing/medium")) if os.path.isfile(os.path.join(path, "testing/medium", f))] 
-            elif subset == "hard":
-                files = [f for f in os.listdir(os.path.join(path, "testing/hard")) if os.path.isfile(os.path.join(path, "testing/hard", f))]
-        files.sort()
-        idx = 0
-        for f in files:
-            if training and idx == 20:
-                break
-            if f.endswith('.pddl') and 'domain' not in f:
-                suite.append((d, os.path.join(path, f)))
-                idx += 1
+    
+    path = os.path.join(bench, d)
+    if split=="training":
+        files = [f"training/easy/{f}" for f in os.listdir(os.path.join(path, "training/easy")) if os.path.isfile(os.path.join(path, "training/easy", f))]
+    elif split=="testing":
+        if subset == "easy":
+            files = [f"testing/easy/{f}" for f in os.listdir(os.path.join(path, "testing/easy")) if os.path.isfile(os.path.join(path, "testing/easy", f))]
+        elif subset == "medium":
+            files = [f"testing/medium/{f}" for f in os.listdir(os.path.join(path, "testing/medium")) if os.path.isfile(os.path.join(path, "testing/medium", f))] 
+        elif subset == "hard":
+            files = [f"testing/hard/{f}" for f in os.listdir(os.path.join(path, "testing/hard")) if os.path.isfile(os.path.join(path, "testing/hard", f))]
+    files.sort()
+    idx = 0:
+    for f in files:
+        if training and idx == 20:
+            break
+        if f.endswith('.pddl') and 'domain' not in f:
+            suite.append((d, os.path.join(path, f)))
+            idx += 1
 
     return suite
 
