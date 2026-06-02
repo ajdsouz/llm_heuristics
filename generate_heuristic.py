@@ -93,11 +93,11 @@ def main(args, n_prompt):
     # if args.framework == "gemini":
     #     answer, input_token_count, output_token_count, model_response_time = models.run_gemini(args.model, args.prompt, args.temperature, args.top_p)
     if args.framework == "deepseek":
-        (answer, input_token_count, output_token_count), model_response_time = models.run_deepseek(model_name, prompt, args.temperature, args.top_p)
+        (answer, input_token_count, output_token_count), model_response_time = models.run_deepseek(args.model, prompt, args.temperature, args.top_p)
     elif args.framework == "openai":
-        (answer, input_token_count, output_token_count), model_response_time = models.run_openai(model_name, prompt, args.temperature, args.top_p)
+        (answer, input_token_count, output_token_count), model_response_time = models.run_openai(args.model, prompt, args.temperature, args.top_p)
     elif args.framework == "local":
-        (answer, input_token_count, output_token_count), model_response_time = models.run_local(model_name, prompt, args.temperature, args.top_p)
+        (answer, input_token_count, output_token_count), model_response_time = models.run_local(args.model, prompt, args.temperature, args.top_p)
 
     logging.info("LLM Answer:")
     print(answer)
