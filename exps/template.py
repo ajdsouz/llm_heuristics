@@ -37,7 +37,7 @@ TIME_LIMIT = {time_limit}
 MEMORY_LIMIT = {memory_limit}
 
 
-ENV = LocalEnvironment(processes=4)
+ENV = LocalEnvironment(processes=8)
 SUITE = make_suite(DOMAIN, BENCHMARKS_DIR, split='{split}', subset='{subset}')
 
 ATTRIBUTES = [

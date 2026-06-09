@@ -10,5 +10,6 @@ PORT="8000"
 vllm serve "$MODEL_PATH" \
     --enforce-eager \
     --host "$HOST" \
-    --port "$PORT"
+    --port "$PORT" \
+    # --max-model-lem 16384
 
