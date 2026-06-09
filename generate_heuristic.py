@@ -32,11 +32,13 @@ def validate_heuristic_file(value) -> str:
 
 
 def validate_temperature(value) -> float:
+    value = float(value)
     if value > 2 or value < 0:
         raise argparse.ArgumentTypeError("The temperature must be in the interval [0,2].")
     return value
 
 def validate_top_p(value) -> float:
+    value = float(value)
     if value > 1 or value < 0:
         raise argparse.ArgumentTypeError("The top-P must be in the interval [0,1].")
     return value
