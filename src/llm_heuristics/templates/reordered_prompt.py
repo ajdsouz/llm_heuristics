@@ -433,7 +433,7 @@ This is the source code for representing operators and tasks in the planner:
 $task
 </code-file-task>
 
-Provide only the Python code of the domain-dependent heuristic for the $name domain. Here is a checklist to help you with your code:
+Provide only the Python code, inside a code block using triple backticks, of the domain-dependent heuristic for the $name domain. Here is a checklist to help you with your code:
 1) The code for extracting objects from facts remembers to ignore the surrounding brackets.
 2) The heuristic is 0 only for goal states.
 3) The heuristic value is finite for solvable states.
