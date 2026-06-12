@@ -11,5 +11,8 @@ vllm serve "$MODEL_PATH" \
     --enforce-eager \
     --host "$HOST" \
     --port "$PORT" \
+    --reasoning-parser deepseek_r1
+    # --reasoning-parser qwen3
+    # --tensor-parallel-size 2
     # --max-model-lem 16384
 
