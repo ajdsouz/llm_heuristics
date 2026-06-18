@@ -1,3 +1,4 @@
+import re
 from src.utils import timer
 from src.llm_heuristics.templates import *
 
@@ -5,7 +6,7 @@ from src.llm_heuristics.templates import *
 def create_prompt(suite, heuristic_name, prompt_format, ablation):
     data = {}
 
-    data["name"] = suite.name
+    # data["name"] = suite.name # prevent leakage of domain name from domain file
     data["heuristic_name"] = heuristic_name
 
     h1 = "src/pyperplan/heuristics/blind.py"
@@ -21,7 +22,9 @@ def create_prompt(suite, heuristic_name, prompt_format, ablation):
     with open(suite.domain, "r") as f:
         lines = f.readlines()
         code = [line for line in lines if not line.strip().startswith(';')]
-        data["domain"] = ''.join(code)
+        code_str = ''.join(code)
+        data["domain"] = code_str
+        data["name"] = re.findall(r'\(domain .*?\)', code_str)[0]
     with open(suite.instance1, "r") as f:
         lines = f.readlines()
         code = [line for line in lines if not line.strip().startswith(';')]
