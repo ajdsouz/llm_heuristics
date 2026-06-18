@@ -30,6 +30,12 @@ if __name__=="__main__":
     )
 
     parser.add_argument(
+        "--num_procs",
+        type=int,
+        help="Number of process to spawn"
+    )
+
+    parser.add_argument(
         "--time_limit",
         type=int,
         help="timelimit to run the heuristics"
