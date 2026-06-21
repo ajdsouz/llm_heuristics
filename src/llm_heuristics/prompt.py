@@ -24,7 +24,7 @@ def create_prompt(suite, heuristic_name, prompt_format, ablation):
         code = [line for line in lines if not line.strip().startswith(';')]
         code_str = ''.join(code)
         data["domain"] = code_str
-        data["name"] = re.findall(r'\(domain .*?\)', code_str)[0]
+        data["name"] = re.findall(r'\(domain\s+([^\s\)]+)\)', code_str)[0]
     with open(suite.instance1, "r") as f:
         lines = f.readlines()
         code = [line for line in lines if not line.strip().startswith(';')]
