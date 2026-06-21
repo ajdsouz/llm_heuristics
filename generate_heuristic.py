@@ -2,9 +2,11 @@ import dataclasses
 import sys
 import os
 import json
+from time import perf_counter
 from dataclasses import dataclass, asdict
 import logging 
 import argparse
+from multiprocessing import Pool, Lock
 from src.utils import timer, HeuristicGenerationConfig
 from src.llm_heuristics import models
 from src.llm_heuristics.suites import SUITES, DomainSuite
@@ -18,6 +20,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+lock = None
 
 def validate_heuristic_name(value) -> str:
     if not value.endswith("Heuristic"):
@@ -43,11 +46,29 @@ def validate_top_p(value) -> float:
         raise argparse.ArgumentTypeError("The top-P must be in the interval [0,1].")
     return value
 
+def init_lock(l):
+    global lock
+    lock = l
+
+def worker(args_n_prompt):
+    args, n_prompt = args_n_prompt
+    experiment = main(args, n_prompt)
+    s_temperature = str(args.temperature).replace(".", "_")
+    s_top_p = str(args.top_p).replace(".", "_")
+    experiment_log = f"{args.log_path}/{experiment.model_name}-{args.domain}-temp-{s_temperature}-top_p-{s_top_p}"
+    os.makedirs(experiment_log, exist_ok=True)
+
+    with lock:
+        with open(f"{experiment_log}/logs.jsonl", "a") as f:
+            f.write(json.dumps(asdict(experiment)) + "\n")
+            f.flush()
+
 
 
     
-@timer
+
 def main(args, n_prompt):
+    START_TIME = perf_counter()
     logging.info(f"Python version: {sys.version}.")
     logging.info(f"Using suite {args.domain}.")
     # suite = SUITES[domain]
@@ -122,7 +143,8 @@ def main(args, n_prompt):
     logging.info(
         f"Saving code to {heuristic_file}."
     )
-
+    END_TIME = perf_counter()
+    total_runtime = END_TIME - START_TIME
     experiment = HeuristicGenerationConfig(
         model_name=model_name,
         domain=args.domain,
@@ -133,7 +155,8 @@ def main(args, n_prompt):
         generated_heuristic=heuristic_file,
         model_response_time=model_response_time, 
         input_token_count=input_token_count,
-        output_token_count=output_token_count
+        output_token_count=output_token_count,
+        heuristic_generation_runtime=total_runtime
     )
 
     s_temperature = str(args.temperature).replace(".", "_")
@@ -237,6 +260,12 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
+        "--n_procs",
+        type=int,
+        help="Number of process to spawn"
+    )
+
+    parser.add_argument(
         "--ablation",
         default="false",
         choices=["false", "complete", "description_simple", "domain", "instances", "dependent-heuristics", "state-representation", "static-representation",
@@ -247,17 +276,21 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     logging.info(f"Total Prompts to generate : {args.n_prompts}")
-    for n_prompt in range(args.n_prompts):
-        logging.info(f"Processing prompt : {n_prompt}")
-        experiment, total_runtime = main(args, n_prompt)
-        experiment.heuristic_generation_runtime = total_runtime
-        s_temperature = str(args.temperature).replace(".", "_")
-        s_top_p = str(args.top_p).replace(".", "_")
-        experiment_log = f"{args.log_path}/{experiment.model_name}-{args.domain}-temp-{s_temperature}-top_p-{s_top_p}"
-        os.makedirs(experiment_log, exist_ok=True)
+    # for n_prompt in range(args.n_prompts):
+    #     logging.info(f"Processing prompt : {n_prompt}")
+    #     experiment, total_runtime = main(args, n_prompt)
+    #     experiment.heuristic_generation_runtime = total_runtime
+    #     s_temperature = str(args.temperature).replace(".", "_")
+    #     s_top_p = str(args.top_p).replace(".", "_")
+    #     experiment_log = f"{args.log_path}/{experiment.model_name}-{args.domain}-temp-{s_temperature}-top_p-{s_top_p}"
+    #     os.makedirs(experiment_log, exist_ok=True)
 
-        with open(f"{experiment_log}/logs.jsonl", "a") as f:
-            f.write(json.dumps(asdict(experiment)) + "\n")
+    #     with open(f"{experiment_log}/logs.jsonl", "a") as f:
+    #         f.write(json.dumps(asdict(experiment)) + "\n")
 
     # logging.info(f"Total heuristic generation runtime: {total_runtime}") 
     # logging.info(f"Experiment saved at : {experiment_log}")
+
+    l = Lock()
+    with Pool(processes=args.n_procs, initializer=init_lock, initargs=(l,)) as pool:
+        _ = pool.map(worker, [(args, n) for n in range(args.n_prompts)])
