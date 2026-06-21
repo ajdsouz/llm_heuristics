@@ -11,6 +11,7 @@ python generate_heuristic.py \
     --framework "local" \
     --model "$MODEL_NAME" \
     --n_prompts 25 \
+    --n_procs 5 \
     --temperature 0.6 \
     --top-p 0.95
 
@@ -23,6 +24,7 @@ python generate_heuristic.py \
     --framework "local" \
     --model "$MODEL_NAME" \
     --n_prompts 25 \
+    --n_procs 5 \
     --temperature 0.6 \
     --top-p 0.95
 
@@ -34,6 +36,7 @@ python generate_heuristic.py \
     --framework "local" \
     --model "$MODEL_NAME" \
     --n_prompts 25 \
+    --n_procs 5 \
     --temperature 0.6 \
     --top-p 0.95
 
@@ -56,6 +59,7 @@ python generate_heuristic.py \
     --framework "local" \
     --model "$MODEL_NAME" \
     --n_prompts 25 \
+    --n_procs 5 \
     --temperature 0.6 \
     --top-p 0.95
 
@@ -68,6 +72,7 @@ python generate_heuristic.py \
     --framework "local" \
     --model "$MODEL_NAME" \
     --n_prompts 25 \
+    --n_procs 5 \
     --temperature 0.6 \
     --top-p 0.95
 
@@ -80,6 +85,7 @@ python generate_heuristic.py \
     --framework "local" \
     --model "$MODEL_NAME" \
     --n_prompts 25 \
+    --n_procs 5 \
     --temperature 0.6 \
     --top-p 0.95
 
@@ -92,6 +98,7 @@ python generate_heuristic.py \
     --framework "local" \
     --model "$MODEL_NAME" \
     --n_prompts 25 \
+    --n_procs 5 \
     --temperature 0.6 \
     --top-p 0.95
 
@@ -104,6 +111,7 @@ python generate_heuristic.py \
     --framework "local" \
     --model "$MODEL_NAME" \
     --n_prompts 25 \
+    --n_procs 5 \
     --temperature 0.6 \
     --top-p 0.95
 
@@ -126,5 +134,6 @@ python generate_heuristic.py \
     --framework "local" \
     --model "$MODEL_NAME" \
     --n_prompts 25 \
+    --n_procs 5 \
     --temperature 0.6 \
     --top-p 0.95
