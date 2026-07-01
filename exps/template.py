@@ -31,7 +31,7 @@ PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 HEURISTICS_DIR = '{experiment_dir}heuristics'
 HEURISTICS = [f for f in os.listdir(HEURISTICS_DIR) if f.endswith('.py')]
-BENCHMARKS_DIR = '/scratch/ajdsouza/katharina-data/data_for_anthony/data_costumed/data_costumed_ipc_v1/'
+BENCHMARKS_DIR = '{benchmarks_dir}'
 DOMAIN = '{domain}'
 TIME_LIMIT = {time_limit}
 MEMORY_LIMIT = {memory_limit}

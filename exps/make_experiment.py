@@ -30,6 +30,12 @@ if __name__=="__main__":
     )
 
     parser.add_argument(
+        "--benchmarks_dir",
+        type=str,
+        help="Directory of benchmarks"
+    )
+
+    parser.add_argument(
         "--num_procs",
         type=int,
         help="Number of process to spawn"
