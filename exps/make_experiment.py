@@ -36,6 +36,13 @@ if __name__=="__main__":
     )
 
     parser.add_argument(
+        "--version",
+        type=str,
+        choices=["orig", "ipcv1", "ipcv2", "ipcv3"],
+        default="orig"
+        help="Version of benchmark to choose"
+    )
+    parser.add_argument(
         "--num_procs",
         type=int,
         help="Number of process to spawn"
@@ -88,7 +95,7 @@ if __name__=="__main__":
     data_dict = vars(args)
     data_dict.update(exp_data)
 
-    exp_script = f"exps/{exp_data['model_name']}-{exp_data['domain']}.py"
+    exp_script = f"exps/{exp_data['model_name']}-{exp_data['domain']}-{args.version}.py"
 
     code = generate_experiment(template, data_dict)
 
