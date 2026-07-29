@@ -93,7 +93,7 @@ if __name__=="__main__":
     exp_data = {
         'domain': entry['domain'],
         'model_name': entry['model_name'],
-        'heuristic': bh['algorithm']
+        'heuristic': list(bh.values())[0]['algorithm']
     }
 
     data_dict = vars(args)
