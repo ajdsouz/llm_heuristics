@@ -7,13 +7,16 @@ from project import get_agile_score, get_expansion_score
 
 @click.command()
 @click.argument('filename')
+@click.argument('experiment_dir')
 @click.option(
     "--evaluator",
     default="expansion",
     type=click.Choice(["expansion", "agile"]),
     help="Score used to classify heuristic.",
 )
-def main(filename, evaluator):
+
+
+def main(filename, evaluator, experiment_dir):
     def get_sum_score(s):
         return sum(s)
 
@@ -72,11 +75,22 @@ def main(filename, evaluator):
     for dom, (alg, cover, score, second_score) in sorted(best.items()):
         print(f"{dom} {alg} {cover} {score} {second_score}")
 
+    best_json = {}
 
-    prefix='gemini-2.0-ft-'
-    for dom, (alg, cover, score, second_score) in sorted(best.items()):
-        heur = alg.replace(prefix,'')
-        print(f"'{dom}' : '{heur}',")
+    for dom, (alg, cover, score, second_score) in best.items():
+        best_json[dom] = {
+            "algorithm": alg,
+            "coverage": cover,
+            f"score_{main_evaluator}": score,
+            f"score_{secondary_evaluator}": second_score
+        }
+    with open(f"{experiment_dir}/best_heuristics.json", "w") as f:
+        json.dump(best_json, f, indent=4)
+
+    #prefix='gemini-2.0-ft-'
+    #for dom, (alg, cover, score, second_score) in sorted(best.items()):
+    #    heur = alg.replace(prefix,'')
+    #    print(f"'{dom}' : '{heur}',")
 
 if __name__ == '__main__':
     main()
