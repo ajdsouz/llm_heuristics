@@ -1,7 +1,7 @@
 import json
 import logging
 import argparse
-from template import template
+from testset_template import template
 
 def generate_experiment(template, args):
     return template.format(**args)
@@ -38,7 +38,7 @@ if __name__=="__main__":
     parser.add_argument(
         "--version",
         type=str,
-        choices=["orig", "ipcv1", "ipcv2", "ipcv3"],
+        choices=["orig", "ipcv1", "ipcv2", "ipcv3", "anon"],
         default="orig",
         help="Version of benchmark to choose"
     )

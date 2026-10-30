@@ -31,7 +31,9 @@ PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 HEURISTICS_DIR = '{experiment_dir}heuristics'
 #HEURISTICS = [f for f in os.listdir(HEURISTICS_DIR) if f.endswith('.py')]
-HEURISTIC = '{heuristic}'
+H = '{heuristic}'
+prefix = 'Qwen3-30B-A3B-Thinking-2507-'
+HEURISTIC = H.replace(prefix, "")
 BENCHMARKS_DIR = '{benchmarks_dir}'
 DOMAIN = '{domain}'
 TIME_LIMIT = {time_limit}
@@ -62,7 +64,7 @@ exp = Experiment(environment=ENV, path='{experiment_dir}exps/{split}/{subset}')
 exp.add_parser(make_parser())
 
 for domain, domain_file, task in SUITE:
-    algorithm = '-'.join(['{model_name}', h])
+    algorithm = '-'.join(['{model_name}', HEURISTIC])
 
     heur = os.path.join(HEURISTICS_DIR, HEURISTIC)
 
