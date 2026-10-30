@@ -14,6 +14,9 @@ def create_prompt(suite, heuristic_name, prompt_format, ablation):
     if prompt_format in ['checklist', 'goalcount', 'new', 'reordered', 'neurips']:
         h1 = "src/llm_heuristics/templates/gripper.py"
         h2 = "src/llm_heuristics/templates/logistics.py"
+    elif prompt_format == 'mod_reordered':
+        h1 = "src/llm_heuristics/templates/ferry.py"
+        h2 = "src/llm_heuristics/templates/grid.py"
     if ablation == 'heuristics-nocomment':
         h1 = "src/llm_heuristics/templates/gripper_nocomment.py"
         h2 = "src/llm_heuristics/templates/logistics_nocomment.py"
@@ -63,6 +66,8 @@ def create_prompt(suite, heuristic_name, prompt_format, ablation):
             template = GOALCOUNT_PROMPT
         elif prompt_format == 'reordered' or prompt_format == 'neurips':
             template = REORDERED_PROMPT
+        elif prompt_format == 'mod_reordered':
+            template = MOD_REORDERED_PROMPT
         elif prompt_format == 'ideas':
             template = IDEAS_PROMPT
         else:
