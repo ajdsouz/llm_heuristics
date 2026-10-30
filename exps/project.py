@@ -60,7 +60,7 @@ def get_autoscale_domains(run):
     return run['domain'] in AUTOSCALE_DOMAINS
 
 
-def make_suite(d, bench, training=False, split="training", subset="easy"):
+def make_suite(d, bench, training=False, split=None, subset=None):
     suite = []
     
     path = os.path.join(bench, d)
@@ -73,6 +73,8 @@ def make_suite(d, bench, training=False, split="training", subset="easy"):
             files = [f"testing/medium/{f}" for f in os.listdir(os.path.join(path, "testing/medium")) if os.path.isfile(os.path.join(path, "testing/medium", f))] 
         elif subset == "hard":
             files = [f"testing/hard/{f}" for f in os.listdir(os.path.join(path, "testing/hard")) if os.path.isfile(os.path.join(path, "testing/hard", f))]
+    else:
+        files = [f"orig_instances/{f}" for f in os.listdir(os.path.join(path, "orig_instances")) if os.path.isfile(os.path.join(path, "orig_instances", f))]
     files.sort()
     idx = 0
     domain_file = os.path.join(path, 'domain.pddl')

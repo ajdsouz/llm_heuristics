@@ -19,7 +19,7 @@ done
 echo "Model is loaded"
 
 echo "starting heuristic_generation"
-bash only_generate_heuristic.sh /scratch/common_models/Qwen3-30B-A3B-Thinking-2507
+bash only_generate_heuristic_v2.sh /scratch/common_models/Qwen3-30B-A3B-Thinking-2507
 # python generate_heuristic.py \
 #     --base_path benchmarks/ipc2023-learning/training \
 #     --log_path /scratch/ajdsouza/llm_heuristics/tests/log \

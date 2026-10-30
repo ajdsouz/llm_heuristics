@@ -10,52 +10,54 @@ dependencies = [
     "lab>=8.4",
     "openai>=1.61.1",
     "pandas>=2.2.3",
+    "pip>=26.2.1",
     "tarski>=0.9.1",
+    "vllm @ https://github.com/vllm-project/vllm/releases/download/v0.16.0/vllm-0.16.0-cp38-abi3-manylinux_2_31_x86_64.whl",
 ]
 
-[project.optional-dependencies]
-mac = ["torch==2.9.1"]
+#[project.optional-dependencies]
+#mac = ["torch==2.9.1"]
 
-cu128 = [
-    "torch==2.9.1",
-    "vllm",
-]
-cu130 = [
-    "torch==2.9.1",
-    "vllm",
-]
-
-[tool.uv]
-conflicts = [
-    [
-        {extra = "mac"},
-        {extra = "cu128"},
-        {extra = "cu130"},
-    ]
-]
+#cu128 = [
+#    "torch==2.9.1",
+#    "vllm",
+#]
+#cu130 = [
+#    "torch==2.9.1",
+#    "vllm",
+#]
+#
+#[tool.uv]
+#conflicts = [
+#    [
+#        {extra = "mac"},
+#        {extra = "cu128"},
+#        {extra = "cu130"},
+#    ]
+#]
 
 [build-system]
 requires = ["uv_build>=0.9.8,<0.10.0"]
 build-backend = "uv_build"
 
 
-[tool.uv.sources]
-torch = [
-    {index = "pypi", extra = "mac"},
-    {index = "torch-cu128", extra = "cu128"},
-    {index = "torch-cu130", extra = "cu130"},
-]
+#[tool.uv.sources]
+#torch = [
+#    {index = "pypi", extra = "mac"},
+#    {index = "torch-cu128", extra = "cu128"},
+#    {index = "torch-cu130", extra = "cu130"},
+#]
+#
+#[[tool.uv.index]]
+#name = "torch-cu128"
+#url = "https://download.pytorch.org/whl/cu128"
+#explicit = true
+#
+#[[tool.uv.index]]
+#name = "torch-cu130"
+#url = "https://download.pytorch.org/whl/cu130"
+#explicit = true
 
-[[tool.uv.index]]
-name = "torch-cu128"
-url = "https://download.pytorch.org/whl/cu128"
-explicit = true
-
-[[tool.uv.index]]
-name = "torch-cu130"
-url = "https://download.pytorch.org/whl/cu130"
-explicit = true
-
-[[tool.uv.index]]
-name = "pypi"
-url = "https://pypi.org/simple"
+#[[tool.uv.index]]
+#name = "pypi"
+#url = "https://pypi.org/simple"
