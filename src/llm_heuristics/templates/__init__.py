@@ -3,6 +3,7 @@ from .checklist_prompt import *
 from .goalcount_prompt import *
 from .new_prompt import *
 from .reordered_prompt import *
+from .reordered_prompt_mod import *
 from .pyperplan_prompt import *
 from .ideas_prompt import *
 

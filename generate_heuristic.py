@@ -236,7 +236,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--prompt-format",
         default="neurips",
-        choices=["base", "checklist", "goalcount", "new", "pyperplan", "reordered", "neurips"],
+        choices=["base", "checklist", "goalcount", "new", "pyperplan", "reordered", "neurips", "mod_reordered"],
         help="Format of the prompt passed to the heuristic.",
     )
 
